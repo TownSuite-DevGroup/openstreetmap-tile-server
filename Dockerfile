@@ -80,6 +80,9 @@ RUN apt-get update \
  python3-psycopg2 \
  python3-shapely \
  python3-pip \
+ python3-requests \
+ python3-osmium \
+ python3-yaml \
  renderd \
  sudo \
  vim \
@@ -94,12 +97,6 @@ RUN wget https://github.com/googlefonts/noto-emoji/blob/9a5261d871451f9b5183c934
 
 # For some reason this one is missing in the default packages
 RUN wget https://github.com/stamen/terrain-classic/blob/master/fonts/unifont-Medium.ttf?raw=true --content-disposition -P /usr/share/fonts/
-
-# Install python libraries
-RUN pip3 install \
- requests \
- osmium \
- pyyaml
 
 # Install carto for stylesheet
 RUN npm install -g carto@1.2.0
