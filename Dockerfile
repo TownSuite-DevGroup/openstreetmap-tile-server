@@ -91,7 +91,7 @@ RUN apt-get update \
 && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 RUN python3 -m venv /opt/venv \
-&& /opt/venv/bin/pip install --no-cache-dir pyosmium
+&& /opt/venv/bin/pip install --no-cache-dir osmium==4.3.0
 
 RUN adduser --disabled-password --gecos "" renderer
 
