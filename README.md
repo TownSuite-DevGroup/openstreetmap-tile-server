@@ -207,7 +207,6 @@ docker run \
 If the key is configured and a tile request is missing the `key` query parameter, or the value is incorrect, the server returns `403 Forbidden`.
 
 Notes:
-- This only applies to tile requests under `/tile/`.
 - This is intended as a lightweight abuse-prevention measure, not strong client authentication.
 - The API key is intended to reduce casual abuse, not to provide strong client-side secrecy.
 
