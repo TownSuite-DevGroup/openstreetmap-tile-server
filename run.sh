@@ -161,13 +161,20 @@ if [ "$1" == "run" ]; then
         echo "export APACHE_ARGUMENTS='-D ALLOW_CORS'" >> /etc/apache2/envvars
     fi
 
-    # Configure optional tile API key auth.
+     # Configure optional tile API key auth.
     # If TILE_API_KEY is unset or empty, auth stays disabled.
     rm -f /etc/apache2/conf-enabled/tile-api-key.conf
 
     if [ -n "${TILE_API_KEY:-}" ]; then
         cat > /etc/apache2/conf-enabled/tile-api-key.conf <<EOF
 RewriteEngine On
+
+# Require key for the demo page at /
+RewriteCond %{REQUEST_URI} ^/$
+RewriteCond %{QUERY_STRING} !(^|&)key=${TILE_API_KEY}(&|$)
+RewriteRule ^ - [F]
+
+# Require key for tile requests
 RewriteCond %{REQUEST_URI} ^/tile/
 RewriteCond %{QUERY_STRING} !(^|&)key=${TILE_API_KEY}(&|$)
 RewriteRule ^ - [F]
