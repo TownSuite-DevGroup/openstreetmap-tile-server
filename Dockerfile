@@ -97,10 +97,10 @@ RUN python3 -m venv /opt/venv \
 RUN adduser --disabled-password --gecos "" renderer
 
 # Get Noto Emoji Regular font, despite it being deprecated by Google
-RUN wget https://github.com/googlefonts/noto-emoji/blob/9a5261d871451f9b5183c93483cbd68ed916b1e9/fonts/NotoEmoji-Regular.ttf?raw=true --content-disposition -P /usr/share/fonts/
+RUN wget https://raw.githubusercontent.com/googlefonts/noto-emoji/9a5261d871451f9b5183c93483cbd68ed916b1e9/fonts/NotoEmoji-Regular.ttf --content-disposition -P /usr/share/fonts/
 
 # For some reason this one is missing in the default packages
-RUN wget https://github.com/stamen/terrain-classic/blob/master/fonts/unifont-Medium.ttf?raw=true --content-disposition -P /usr/share/fonts/
+RUN wget https://raw.githubusercontent.com/stamen/terrain-classic/master/fonts/unifont-Medium.ttf --content-disposition -P /usr/share/fonts/
 
 # Install carto for stylesheet
 RUN npm install -g carto@1.2.0
