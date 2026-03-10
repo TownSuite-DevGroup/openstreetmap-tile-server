@@ -173,6 +173,44 @@ docker run \
     run
 ```
 
+### Tile API key protection (optional)
+
+You can optionally require a static API key for tile requests by setting the `TILE_API_KEY` environment variable when starting the server with the `run` command.
+
+If `TILE_API_KEY` is not set, tile requests behave exactly as they do by default and no authentication is required.
+
+When enabled, requests to `/tile/...` must include the key as a query parameter:
+
+```text
+/tile/{z}/{x}/{y}.png?key=YOUR_KEY
+```
+
+If you use the built-in demo page for testing, you can open:
+
+```text
+/?key=YOUR_KEY
+```
+
+and the demo will automatically include the key in its tile requests.
+
+Example:
+
+```sh
+docker run \
+    -p 8080:80 \
+    -e TILE_API_KEY=secret-key \
+    -v osm-data:/data/database/ \
+    -d overv/openstreetmap-tile-server \
+    run
+```
+
+If the key is configured and a tile request is missing the `key` query parameter, or the value is incorrect, the server returns `403 Forbidden`.
+
+Notes:
+- This only applies to tile requests under `/tile/`.
+- This is intended as a lightweight abuse-prevention measure, not strong client authentication.
+- The API key is intended to reduce casual abuse, not to provide strong client-side secrecy.
+
 ### Connecting to Postgres
 
 To connect to the PostgreSQL database inside the container, make sure to expose port 5432:
