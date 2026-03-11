@@ -97,10 +97,10 @@ RUN python3 -m venv /opt/venv \
 RUN adduser --disabled-password --gecos "" renderer
 
 # Get Noto Emoji Regular font, despite it being deprecated by Google
-RUN wget https://github.com/googlefonts/noto-emoji/blob/9a5261d871451f9b5183c93483cbd68ed916b1e9/fonts/NotoEmoji-Regular.ttf?raw=true --content-disposition -P /usr/share/fonts/
+RUN wget https://raw.githubusercontent.com/googlefonts/noto-emoji/9a5261d871451f9b5183c93483cbd68ed916b1e9/fonts/NotoEmoji-Regular.ttf --content-disposition -P /usr/share/fonts/
 
 # For some reason this one is missing in the default packages
-RUN wget https://github.com/stamen/terrain-classic/blob/master/fonts/unifont-Medium.ttf?raw=true --content-disposition -P /usr/share/fonts/
+RUN wget https://raw.githubusercontent.com/stamen/terrain-classic/master/fonts/unifont-Medium.ttf --content-disposition -P /usr/share/fonts/
 
 # Install carto for stylesheet
 RUN npm install -g carto@1.2.0
@@ -108,7 +108,8 @@ RUN npm install -g carto@1.2.0
 # Configure Apache
 RUN echo "LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so" >> /etc/apache2/conf-available/mod_tile.conf \
 && echo "LoadModule headers_module /usr/lib/apache2/modules/mod_headers.so" >> /etc/apache2/conf-available/mod_headers.conf \
-&& a2enconf mod_tile && a2enconf mod_headers
+&& a2enconf mod_tile && a2enconf mod_headers \
+&& a2enmod rewrite
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
 RUN ln -sf /dev/stdout /var/log/apache2/access.log \
 && ln -sf /dev/stderr /var/log/apache2/error.log

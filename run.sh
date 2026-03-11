@@ -161,6 +161,33 @@ if [ "$1" == "run" ]; then
         echo "export APACHE_ARGUMENTS='-D ALLOW_CORS'" >> /etc/apache2/envvars
     fi
 
+    # Configure optional tile API key auth.
+    # If TILE_API_KEY is unset or empty, auth stays disabled.
+    rm -f /etc/apache2/conf-enabled/tile-api-key.conf
+
+    if [ -n "${TILE_API_KEY:-}" ]; then
+        # Validate TILE_API_KEY to ensure it cannot alter the Apache regex/config.
+        # Allow only URL-safe characters: letters, digits, '-' and '_'.
+        if ! [[ "${TILE_API_KEY}" =~ ^[A-Za-z0-9_-]+$ ]]; then
+            echo "ERROR: TILE_API_KEY contains unsupported characters. Allowed charset: [A-Za-z0-9_-]" >&2
+            exit 1
+        fi
+
+        cat > /etc/apache2/conf-enabled/tile-api-key.conf <<EOF
+RewriteEngine On
+
+# Require key for the demo page at /
+RewriteCond %{REQUEST_URI} ^/$
+RewriteCond %{QUERY_STRING} !(^|&)key=${TILE_API_KEY}(&|$)
+RewriteRule ^ - [F]
+
+# Require key for tile requests
+RewriteCond %{REQUEST_URI} ^/tile/
+RewriteCond %{QUERY_STRING} !(^|&)key=${TILE_API_KEY}(&|$)
+RewriteRule ^ - [F]
+EOF
+    fi
+
     # Initialize PostgreSQL and Apache
     createPostgresConfig
     service postgresql start
